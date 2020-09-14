@@ -8,12 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"net/http"
 )
 
 // 初始化总路由
 
 func Routers() *gin.Engine {
 	var Router = gin.Default()
+	// 为用户头像和文件提供静态地址
+	Router.StaticFS(global.GVA_CONFIG.LocalUpload.FilePath, http.Dir(global.GVA_CONFIG.LocalUpload.FilePath))
 	// Router.Use(middleware.LoadTls())  // 打开就能玩https了
 	global.GVA_LOG.Debug("use middleware logger")
 	// 跨域
@@ -39,6 +42,7 @@ func Routers() *gin.Engine {
 	router.InitSysDictionaryDetailRouter(ApiGroup)   // 字典详情管理
 	router.InitSysDictionaryRouter(ApiGroup)         // 字典管理
 	router.InitSysOperationRecordRouter(ApiGroup)    // 操作记录
+	router.InitEmailRouter(ApiGroup)                 // 邮件相关路由
 
 	global.GVA_LOG.Info("router register success")
 	return Router
